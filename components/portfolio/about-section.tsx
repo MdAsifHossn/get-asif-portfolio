@@ -51,7 +51,7 @@ export default function AboutSection() {
                   With over 2 years of professional experience in web development, I've had the privilege of working with cutting-edge technologies and contributing to diverse projects that have impacted thousands of users.
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  I specialize in building scalable web applications using modern frameworks like React.js, Next.js, and Vue.js, combined with robust backend solutions using Django. My passion lies in creating intuitive user interfaces that provide exceptional user experiences.
+                  I specialize in building scalable web applications using modern frameworks like React.js, Next.js, and Vue.js, combined with robust backend solutions. My passion lies in creating intuitive user interfaces that provide exceptional user experiences.
                 </p>
               </Card>
             </motion.div>

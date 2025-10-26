@@ -14,7 +14,7 @@ const categories = [
   { value: 'all', label: 'All Projects' },
   { value: 'frontend', label: 'Frontend' },
   { value: 'fullstack', label: 'Full Stack' },
-  { value: 'backend', label: 'Backend' },
+  { value: 'wix', label: 'Wix' },
 ];
 
 const containerVariants = {

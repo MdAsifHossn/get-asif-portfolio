@@ -1,12 +1,17 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowDown, Github, Linkedin, Mail, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { personalInfo } from '@/lib/portfolio-data';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { personalInfo } from "@/lib/portfolio-data";
 
-const roles = ['Web Developer', 'Frontend Specialist', 'React Expert', 'Full Stack Developer'];
+const roles = [
+  "Web Developer",
+  "Frontend Specialist",
+  "React Expert",
+  "Full Stack Developer",
+];
 
 export default function HeroSection() {
   const [currentRole, setCurrentRole] = useState(0);
@@ -19,7 +24,7 @@ export default function HeroSection() {
   }, []);
 
   const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -32,17 +37,29 @@ export default function HeroSection() {
             key={i}
             className="absolute w-2 h-2 bg-primary/20 rounded-full"
             initial={{
-              x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1000,
-              y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : Math.random() * 1000,
+              x:
+                typeof window !== "undefined"
+                  ? Math.random() * window.innerWidth
+                  : Math.random() * 1000,
+              y:
+                typeof window !== "undefined"
+                  ? Math.random() * window.innerHeight
+                  : Math.random() * 1000,
             }}
             animate={{
-              x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : Math.random() * 1000,
-              y: typeof window !== 'undefined' ? Math.random() * window.innerHeight : Math.random() * 1000,
+              x:
+                typeof window !== "undefined"
+                  ? Math.random() * window.innerWidth
+                  : Math.random() * 1000,
+              y:
+                typeof window !== "undefined"
+                  ? Math.random() * window.innerHeight
+                  : Math.random() * 1000,
             }}
             transition={{
               duration: Math.random() * 10 + 20,
               repeat: Infinity,
-              repeatType: 'reverse',
+              repeatType: "reverse",
             }}
           />
         ))}
@@ -68,8 +85,7 @@ export default function HeroSection() {
             </motion.div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
-              Hi, I'm{' '}
-              <span className="gradient-text">{personalInfo.name}</span>
+              Hi, I'm <span className="gradient-text">{personalInfo.name}</span>
             </h1>
 
             <div className="h-16 md:h-20 mb-6">
@@ -90,12 +106,23 @@ export default function HeroSection() {
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-8">
-              <Button size="lg" onClick={() => scrollToSection('projects')} className="btn-hover">
+              <Button
+                size="lg"
+                onClick={() => scrollToSection("projects")}
+                className="btn-hover"
+              >
                 View My Work
               </Button>
-              <Button size="lg" variant="outline" className="btn-hover">
-                <Download className="w-4 h-4 mr-2" />
-                Download Resume
+              <Button asChild size="lg" variant="outline" className="btn-hover">
+                <a
+                  href="https://drive.google.com/uc?export=download&id=1h-lhBfqNtu0CP4HoCe3PTpY1lcIMePGX"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Resume
+                </a>
               </Button>
             </div>
 
@@ -145,7 +172,7 @@ export default function HeroSection() {
                 transition={{
                   duration: 20,
                   repeat: Infinity,
-                  ease: 'linear',
+                  ease: "linear",
                 }}
                 className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-full blur-3xl opacity-20"
               />
@@ -178,7 +205,7 @@ export default function HeroSection() {
             opacity: { delay: 1 },
             y: { duration: 2, repeat: Infinity },
           }}
-          onClick={() => scrollToSection('about')}
+          onClick={() => scrollToSection("about")}
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Scroll down"
         >
