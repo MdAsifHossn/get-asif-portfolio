@@ -31,6 +31,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  // metadataBase: new URL("https://your-netlify-site.netlify.app"),
   title: "Md. Asif Hossain - Web Developer Portfolio",
   description:
     "Professional portfolio of Md. Asif Hossain, an ambitious and hard-working Frontend Developer specializing in React.js, Next.js, Vue.js, and Django. Explore my projects, skills, and experience.",
