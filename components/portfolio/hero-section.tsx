@@ -11,6 +11,7 @@ const roles = [
   "Frontend Specialist",
   "React Expert",
   "Full Stack Developer",
+  "Wix Expert",
 ];
 
 export default function HeroSection() {
