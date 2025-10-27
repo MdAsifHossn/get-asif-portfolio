@@ -1,0 +1,17 @@
+
+# robots.txt for https://getasif.netlify.app
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow admin/private paths (if any in future)
+Disallow: /api/
+Disallow: /_next/static/
+Disallow: /.well-known/
+
+# Sitemap location
+Sitemap: https://getasif.netlify.app/sitemap.xml
+
+# Crawl-delay (optional, helps prevent server overload)
+Crawl-delay: 1
