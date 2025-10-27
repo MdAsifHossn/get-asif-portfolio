@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { personalInfo, stats } from '@/lib/portfolio-data';
+import React from "react";
+import { motion } from "framer-motion";
+import { Card } from "@/components/ui/card";
+import { personalInfo, stats } from "@/lib/portfolio-data";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -27,7 +27,7 @@ export default function AboutSection() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+          viewport={{ once: true, margin: "-100px" }}
           variants={containerVariants}
           className="max-w-6xl mx-auto"
         >
@@ -48,10 +48,14 @@ export default function AboutSection() {
                   {personalInfo.summary}
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  With over 2 years of professional experience in web development, I've had the privilege of working with cutting-edge technologies and contributing to diverse projects that have impacted thousands of users.
+                  {`With over 2 years of professional experience in web development, I've had the privilege of working with cutting-edge technologies and contributing to diverse projects that have impacted thousands of users. My commitment to excellence, combined with my passion for innovation, has led me to excel in my field.`}
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  I specialize in building scalable web applications using modern frameworks like React.js, Next.js, and Vue.js, combined with robust backend solutions. My passion lies in creating intuitive user interfaces that provide exceptional user experiences.
+                  I specialize in building scalable web applications using
+                  modern frameworks like React.js, Next.js, and Vue.js, combined
+                  with robust backend solutions. My passion lies in creating
+                  intuitive user interfaces that provide exceptional user
+                  experiences.
                 </p>
               </Card>
             </motion.div>
@@ -63,7 +67,7 @@ export default function AboutSection() {
                     key={stat.label}
                     variants={itemVariants}
                     whileHover={{ scale: 1.05, y: -5 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
+                    transition={{ type: "spring", stiffness: 300 }}
                   >
                     <Card className="p-6 text-center glass hover:shadow-xl transition-shadow">
                       <motion.div
@@ -85,14 +89,18 @@ export default function AboutSection() {
             </motion.div>
           </div>
 
-          <motion.div variants={itemVariants} className="grid md:grid-cols-3 gap-6">
+          <motion.div
+            variants={itemVariants}
+            className="grid md:grid-cols-3 gap-6"
+          >
             <Card className="p-6 text-center hover:shadow-lg transition-shadow glass">
               <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
                 <span className="text-3xl">🎯</span>
               </div>
               <h3 className="text-xl font-bold mb-2">Mission</h3>
               <p className="text-muted-foreground">
-                To create innovative web solutions that solve real-world problems and deliver exceptional user experiences.
+                To create innovative web solutions that solve real-world
+                problems and deliver exceptional user experiences.
               </p>
             </Card>
 
@@ -102,7 +110,8 @@ export default function AboutSection() {
               </div>
               <h3 className="text-xl font-bold mb-2">Vision</h3>
               <p className="text-muted-foreground">
-                To become a leading full-stack developer who bridges the gap between design and functionality.
+                To become a leading full-stack developer who bridges the gap
+                between design and functionality.
               </p>
             </Card>
 
@@ -112,7 +121,8 @@ export default function AboutSection() {
               </div>
               <h3 className="text-xl font-bold mb-2">Values</h3>
               <p className="text-muted-foreground">
-                Quality code, continuous learning, collaboration, and dedication to delivering excellence in every project.
+                Quality code, continuous learning, collaboration, and dedication
+                to delivering excellence in every project.
               </p>
             </Card>
           </motion.div>

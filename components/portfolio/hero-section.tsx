@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { personalInfo } from "@/lib/portfolio-data";
+import Image from "next/image";
 
 const roles = [
   "Web Developer",
@@ -86,7 +87,7 @@ export default function HeroSection() {
             </motion.div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
-              Hi, I'm <span className="gradient-text">{personalInfo.name}</span>
+              {`Hi, I'm `}<span className="gradient-text">{personalInfo?.name}</span>
             </h1>
 
             <div className="h-16 md:h-20 mb-6">
@@ -178,9 +179,11 @@ export default function HeroSection() {
                 className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-full blur-3xl opacity-20"
               />
               <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-primary shadow-2xl">
-                <img
+                <Image
                   src={personalInfo.profileImage}
                   alt={personalInfo.name}
+                  width={96}
+                  height={96}
                   className="w-full h-full object-cover"
                 />
               </div>
