@@ -1,298 +1,71 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { FormEvent, useState } from "react";
+import emailjs from "@emailjs/browser";
+import { ArrowUpRight, CheckCircle2, Mail, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { personalInfo } from "@/lib/portfolio-data";
-import { ContactMessage } from "@/lib/types";
-import emailjs from "@emailjs/browser";
 
-export default function ContactSection() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<ContactMessage>({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+export default function ContactSection({ showHeading = true }: { showHeading?: boolean }) {
+  const [sending, setSending] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      // EmailJS configuration
-      const serviceId =
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "YOUR_SERVICE_ID";
-      const templateId =
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "YOUR_TEMPLATE_ID";
-      const templateId2 =
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID2 || "YOUR_TEMPLATE_ID2";
-      const publicKey =
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "YOUR_PUBLIC_KEY";
-
-      // Send email using EmailJS
-      await emailjs.send(
-        serviceId,
-        templateId,
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          to_email: personalInfo.email,
-        },
-        publicKey
-      );
-
-      toast.success("Message sent successfully!", {
-        description: "Thank you for reaching out. I'll get back to you soon.",
-      });
-
-      // Send notification email to yourself
-      await emailjs.send(
-        serviceId,
-        templateId2,
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          to_email: personalInfo.email,
-        },
-        publicKey
-      );
-
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
-    } catch (error) {
-      console.error("EmailJS Error:", error);
-      toast.error("Failed to send message", {
-        description: "Please try again later or contact me directly via email.",
-      });
-    } finally {
-      setIsSubmitting(false);
+    if (!serviceId || !templateId || !publicKey) {
+      const subject = encodeURIComponent(String(data.get("subject")));
+      const body = encodeURIComponent(`Hi Asif,\n\n${data.get("message")}\n\nFrom: ${data.get("name")} (${data.get("email")})`);
+      window.location.href = `mailto:${personalInfo.email}?subject=${subject}&body=${body}`;
+      return;
     }
-  };
+
+    setSending(true);
+    try {
+      await emailjs.send(serviceId, templateId, {
+        from_name: data.get("name"), from_email: data.get("email"),
+        subject: data.get("subject"), message: data.get("message"), to_email: personalInfo.email,
+      }, publicKey);
+      form.reset();
+      toast.success("Message sent — thank you!", { description: "I’ll get back to you as soon as possible." });
+    } catch {
+      toast.error("The message couldn’t be sent.", { description: "Please email me directly instead." });
+    } finally { setSending(false); }
+  }
 
   return (
-    <section id="contact" className="py-20">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-          className="max-w-6xl mx-auto"
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Get In <span className="gradient-text">Touch</span>
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Have a project in mind or want to collaborate? Feel free to reach
-              out!
-            </p>
+    <section id="contact" className="section-space relative overflow-hidden border-t border-border bg-card/35">
+      <div className="absolute right-[-15%] top-0 h-[500px] w-[500px] rounded-full bg-primary/[0.06] blur-[120px]" />
+      <div className="shell relative">
+        <div className="grid gap-14 lg:grid-cols-[.8fr_1.2fr] lg:gap-24">
+          <div className={showHeading ? "" : "lg:pt-5"}>
+            <p className="eyebrow">Let’s work together</p>
+            {showHeading && <h2 className="display-title">Have a useful idea?<br /><span className="text-primary">Let’s make it real.</span></h2>}
+            <p className="body-copy mt-7 max-w-md">Tell me what you’re building, where you are in the process and what a successful outcome looks like.</p>
+            <div className="mt-10 space-y-4 text-sm">
+              <a href={`mailto:${personalInfo.email}`} className="focus-ring flex items-center gap-3 rounded transition hover:text-primary"><Mail className="h-5 w-5 text-primary" />{personalInfo.email}</a>
+              <p className="flex items-center gap-3 text-muted-foreground"><MapPin className="h-5 w-5 text-primary" />{personalInfo.location}</p>
+              <p className="flex items-center gap-3 text-accent"><CheckCircle2 className="h-5 w-5" />Available for remote collaboration</p>
+            </div>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <Card className="p-8 glass h-full">
-                <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
-
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Email</h4>
-                      <a
-                        href={`mailto:${personalInfo.email}`}
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        {personalInfo.email}
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Phone</h4>
-                      <a
-                        href={`tel:${personalInfo.phone}`}
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        {personalInfo.phone}
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Location</h4>
-                      <p className="text-muted-foreground">
-                        {personalInfo.location}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-8 pt-8 border-t">
-                  <h4 className="font-semibold mb-4">Connect With Me</h4>
-                  <div className="flex gap-4">
-                    <a
-                      href={personalInfo.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-12 h-12 bg-primary/10 hover:bg-primary hover:text-primary-foreground rounded-full flex items-center justify-center transition-colors"
-                    >
-                      <span className="sr-only">GitHub</span>
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                      </svg>
-                    </a>
-                    <a
-                      href={personalInfo.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-12 h-12 bg-primary/10 hover:bg-primary hover:text-primary-foreground rounded-full flex items-center justify-center transition-colors"
-                    >
-                      <span className="sr-only">LinkedIn</span>
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <Card className="p-8 glass">
-                <h3 className="text-2xl font-bold mb-6">Send Me a Message</h3>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <Label htmlFor="name">Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      placeholder="Your name"
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      placeholder="your.email@example.com"
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="subject">Subject</Label>
-                    <Input
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      required
-                      placeholder="What's this about?"
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message">Message</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      placeholder="Your message..."
-                      rows={5}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    size="lg"
-                    disabled={isSubmitting}
-                    className="w-full btn-hover"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4 mr-2" />
-                        Send Message
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </Card>
-            </motion.div>
-          </div>
-        </motion.div>
+          <form onSubmit={handleSubmit} className="rounded-[1.75rem] border border-border bg-card p-6 sm:p-9">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <label className="text-sm font-medium">Your name<input required name="name" autoComplete="name" placeholder="Jane Smith" className="focus-ring mt-2 w-full rounded-xl border border-input bg-background/60 px-4 py-3.5 text-sm placeholder:text-muted-foreground/60" /></label>
+              <label className="text-sm font-medium">Work email<input required name="email" type="email" autoComplete="email" placeholder="jane@company.com" className="focus-ring mt-2 w-full rounded-xl border border-input bg-background/60 px-4 py-3.5 text-sm placeholder:text-muted-foreground/60" /></label>
+            </div>
+            <label className="mt-5 block text-sm font-medium">What can I help with?<input required name="subject" placeholder="A product website, dashboard, frontend build…" className="focus-ring mt-2 w-full rounded-xl border border-input bg-background/60 px-4 py-3.5 text-sm placeholder:text-muted-foreground/60" /></label>
+            <label className="mt-5 block text-sm font-medium">A few project details<textarea required name="message" rows={5} placeholder="Goals, timeline, current challenges and any useful links…" className="focus-ring mt-2 w-full resize-none rounded-xl border border-input bg-background/60 px-4 py-3.5 text-sm leading-6 placeholder:text-muted-foreground/60" /></label>
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs leading-5 text-muted-foreground">No spam. Your details are only used to reply.</p>
+              <button disabled={sending} className="focus-ring inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition hover:brightness-105 disabled:opacity-60">{sending ? "Sending…" : "Send inquiry"}<ArrowUpRight className="h-4 w-4" /></button>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
   );

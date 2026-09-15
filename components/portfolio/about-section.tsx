@@ -1,132 +1,38 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
-import { Card } from "@/components/ui/card";
-import { personalInfo, stats } from "@/lib/portfolio-data";
+import { Code2, Compass, Layers3 } from "lucide-react";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
+const values = [
+  { icon: Compass, title: "Purpose before pixels", text: "I start with the real user problem, so every screen earns its place." },
+  { icon: Layers3, title: "Built to keep growing", text: "Clear systems and reusable components make products easier to scale and maintain." },
+  { icon: Code2, title: "Care in the details", text: "Accessibility, responsiveness and performance are part of the build—not a final checklist." },
+];
 
 export default function AboutSection() {
   return (
-    <section id="about" className="py-20 bg-muted/30">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          className="max-w-6xl mx-auto"
-        >
-          <motion.div variants={itemVariants} className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              About <span className="gradient-text">Me</span>
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Learn more about my journey and what drives me as a developer
-            </p>
+    <section id="about" className="section-space relative overflow-hidden">
+      <div className="shell">
+        <div className="grid gap-12 lg:grid-cols-[.78fr_1.22fr] lg:gap-24">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }}>
+            <p className="eyebrow">A little about me</p>
+            <h2 className="display-title">More than code.<br /><span className="text-muted-foreground">I build with intent.</span></h2>
           </motion.div>
-
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-            <motion.div variants={itemVariants}>
-              <Card className="p-8 glass">
-                <h3 className="text-2xl font-bold mb-4">My Story</h3>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  {personalInfo.summary}
-                </p>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  {`With over 2 years of professional experience in web development, I've had the privilege of working with cutting-edge technologies and contributing to diverse projects that have impacted thousands of users. My commitment to excellence, combined with my passion for innovation, has led me to excel in my field.`}
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  I specialize in building scalable web applications using
-                  modern frameworks like React.js, Next.js, and Vue.js, combined
-                  with robust backend solutions. My passion lies in creating
-                  intuitive user interfaces that provide exceptional user
-                  experiences.
-                </p>
-              </Card>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <div className="grid grid-cols-2 gap-4">
-                {stats.map((stat, index) => (
-                  <motion.div
-                    key={stat.label}
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <Card className="p-6 text-center glass hover:shadow-xl transition-shadow">
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 }}
-                        className="text-4xl font-bold gradient-text mb-2"
-                      >
-                        {stat.value}
-                      </motion.div>
-                      <div className="text-sm text-muted-foreground font-medium">
-                        {stat.label}
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-
-          <motion.div
-            variants={itemVariants}
-            className="grid md:grid-cols-3 gap-6"
-          >
-            <Card className="p-6 text-center hover:shadow-lg transition-shadow glass">
-              <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                <span className="text-3xl">🎯</span>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Mission</h3>
-              <p className="text-muted-foreground">
-                To create innovative web solutions that solve real-world
-                problems and deliver exceptional user experiences.
-              </p>
-            </Card>
-
-            <Card className="p-6 text-center hover:shadow-lg transition-shadow glass">
-              <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                <span className="text-3xl">💡</span>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Vision</h3>
-              <p className="text-muted-foreground">
-                To become a leading full-stack developer who bridges the gap
-                between design and functionality.
-              </p>
-            </Card>
-
-            <Card className="p-6 text-center hover:shadow-lg transition-shadow glass">
-              <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-                <span className="text-3xl">⚡</span>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Values</h3>
-              <p className="text-muted-foreground">
-                Quality code, continuous learning, collaboration, and dedication
-                to delivering excellence in every project.
-              </p>
-            </Card>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ delay: .1 }}>
+            <p className="body-copy text-foreground">I’m a product-minded frontend engineer who enjoys the space where design, business and engineering meet. Over the last three years, I’ve helped teams turn ambitious ideas into maintainable interfaces used in education, recruitment and commerce.</p>
+            <p className="body-copy mt-5">My long-term vision reaches beyond software: use technology to create opportunity, then invest that growth into family, community and sustainable living in rural Bangladesh. That sense of responsibility shapes how I work—patiently, honestly and for the long run.</p>
           </motion.div>
-        </motion.div>
+        </div>
+
+        <div className="mt-16 grid border-y border-border md:grid-cols-3">
+          {values.map((item, index) => (
+            <motion.article key={item.title} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * .08 }} className={`py-8 md:px-8 ${index > 0 ? "border-t border-border md:border-l md:border-t-0" : ""}`}>
+              <item.icon className="mb-6 h-6 w-6 text-primary" />
+              <h3 className="font-[var(--font-manrope)] text-lg font-bold">{item.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">{item.text}</p>
+            </motion.article>
+          ))}
+        </div>
       </div>
     </section>
   );
