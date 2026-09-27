@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
-import { experiences } from "@/lib/portfolio-data";
+import { useSiteContent } from "@/components/site-content-provider";
 
 export default function ExperienceSection() {
+  const { experiences } = useSiteContent();
   return (
     <section id="experience" className="section-space border-y border-border bg-card/35">
       <div className="shell">

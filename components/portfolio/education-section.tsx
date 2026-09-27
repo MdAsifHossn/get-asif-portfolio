@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion";
 import { GraduationCap } from "lucide-react";
-import { education } from "@/lib/portfolio-data";
+import { useSiteContent } from "@/components/site-content-provider";
 
 export default function EducationSection() {
+  const { education } = useSiteContent();
   const edu = education[0];
   return (
     <section id="education" className="py-16 sm:py-20">

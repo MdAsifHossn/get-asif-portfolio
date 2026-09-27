@@ -4,9 +4,10 @@ import { FormEvent, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { ArrowUpRight, CheckCircle2, Mail, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import { personalInfo } from "@/lib/portfolio-data";
+import { useSiteContent } from "@/components/site-content-provider";
 
 export default function ContactSection({ showHeading = true }: { showHeading?: boolean }) {
+  const { site, home: { contact } } = useSiteContent();
   const [sending, setSending] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -20,7 +21,7 @@ export default function ContactSection({ showHeading = true }: { showHeading?: b
     if (!serviceId || !templateId || !publicKey) {
       const subject = encodeURIComponent(String(data.get("subject")));
       const body = encodeURIComponent(`Hi Asif,\n\n${data.get("message")}\n\nFrom: ${data.get("name")} (${data.get("email")})`);
-      window.location.href = `mailto:${personalInfo.email}?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
       return;
     }
 
@@ -28,7 +29,7 @@ export default function ContactSection({ showHeading = true }: { showHeading?: b
     try {
       await emailjs.send(serviceId, templateId, {
         from_name: data.get("name"), from_email: data.get("email"),
-        subject: data.get("subject"), message: data.get("message"), to_email: personalInfo.email,
+        subject: data.get("subject"), message: data.get("message"), to_email: site.email,
       }, publicKey);
       form.reset();
       toast.success("Message sent — thank you!", { description: "I’ll get back to you as soon as possible." });
@@ -43,13 +44,13 @@ export default function ContactSection({ showHeading = true }: { showHeading?: b
       <div className="shell relative">
         <div className="grid gap-14 lg:grid-cols-[.8fr_1.2fr] lg:gap-24">
           <div className={showHeading ? "" : "lg:pt-5"}>
-            <p className="eyebrow">Let’s work together</p>
-            {showHeading && <h2 className="display-title">Have a useful idea?<br /><span className="text-primary">Let’s make it real.</span></h2>}
-            <p className="body-copy mt-7 max-w-md">Tell me what you’re building, where you are in the process and what a successful outcome looks like.</p>
+            <p className="eyebrow">{contact.eyebrow}</p>
+            {showHeading && <h2 className="display-title">{contact.title}<br /><span className="text-primary">{contact.accent}</span></h2>}
+            <p className="body-copy mt-7 max-w-md">{contact.description}</p>
             <div className="mt-10 space-y-4 text-sm">
-              <a href={`mailto:${personalInfo.email}`} className="focus-ring flex items-center gap-3 rounded transition hover:text-primary"><Mail className="h-5 w-5 text-primary" />{personalInfo.email}</a>
-              <p className="flex items-center gap-3 text-muted-foreground"><MapPin className="h-5 w-5 text-primary" />{personalInfo.location}</p>
-              <p className="flex items-center gap-3 text-accent"><CheckCircle2 className="h-5 w-5" />Available for remote collaboration</p>
+              <a href={`mailto:${site.email}`} className="focus-ring flex items-center gap-3 rounded transition hover:text-primary"><Mail className="h-5 w-5 text-primary" />{site.email}</a>
+              <p className="flex items-center gap-3 text-muted-foreground"><MapPin className="h-5 w-5 text-primary" />{site.location}</p>
+              <p className="flex items-center gap-3 text-accent"><CheckCircle2 className="h-5 w-5" />{site.availability}</p>
             </div>
           </div>
 

@@ -3,17 +3,18 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight, LockKeyhole } from "lucide-react";
-import { projects } from "@/lib/portfolio-data";
+import { useSiteContent } from "@/components/site-content-provider";
 
 const labels = ["Marketplace", "Learning platform", "Recruitment product"];
 
 export default function ProjectsSection({ showHeading = true }: { showHeading?: boolean }) {
+  const { projects, home: { work } } = useSiteContent();
   return (
     <section id="work" className="section-space border-y border-border bg-card/35">
       <div className="shell">
         {showHeading && <div className="mb-14 flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
-          <div><p className="eyebrow">Selected work</p><h2 className="display-title">Products designed<br />to do real work.</h2></div>
-          <p className="max-w-md text-sm leading-6 text-muted-foreground sm:text-base">A selection of production-minded interfaces across commerce, education and recruitment—each balancing user needs with business goals.</p>
+          <div><p className="eyebrow">{work.eyebrow}</p><h2 className="display-title">{work.title}</h2></div>
+          <p className="max-w-md text-sm leading-6 text-muted-foreground sm:text-base">{work.description}</p>
         </div>}
 
         <div className="space-y-6">
@@ -24,7 +25,7 @@ export default function ProjectsSection({ showHeading = true }: { showHeading?: 
                 <div className="relative min-h-[280px] overflow-hidden bg-stone-900 sm:min-h-[380px] lg:min-h-[440px]">
                   <Image src={project.imageUrl} alt={`${project.title} interface preview`} fill sizes="(max-width: 1024px) 100vw, 58vw" className="project-image object-cover object-top transition-transform duration-700 ease-out" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
-                  <span className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/45 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.16em] backdrop-blur">{labels[index]}</span>
+                  <span className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/45 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.16em] backdrop-blur">{labels[index] || project.category}</span>
                 </div>
                 <div className="flex flex-col justify-between p-6 sm:p-9 lg:p-10">
                   <div>

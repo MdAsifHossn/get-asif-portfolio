@@ -6,10 +6,14 @@ import PortfolioNavigation from "@/components/portfolio/portfolio-navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import PortfolioFooter from "@/components/portfolio/portfolio-footer";
+import { SiteContentProvider } from "@/components/site-content-provider";
+import { getSiteContent } from "@/lib/content-repository";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
 const siteUrl = "https://getasif.netlify.app";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -41,17 +45,20 @@ const jsonLd = {
   knowsAbout: ["React", "Next.js", "Vue.js", "TypeScript", "Frontend Architecture"],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const content = await getSiteContent();
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${manrope.variable}`}>
         <Script id="person-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <PortfolioNavigation />
-          {children}
-          <PortfolioFooter />
-          <Toaster />
-        </ThemeProvider>
+        <SiteContentProvider content={content}>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+            <PortfolioNavigation />
+            {children}
+            <PortfolioFooter />
+            <Toaster />
+          </ThemeProvider>
+        </SiteContentProvider>
       </body>
     </html>
   );

@@ -6,16 +6,10 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
-
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/work", label: "Work" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/contact", label: "Contact" },
-];
+import { useSiteContent } from "@/components/site-content-provider";
 
 export default function PortfolioNavigation() {
+  const { navigation: links, site } = useSiteContent();
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -31,12 +25,14 @@ export default function PortfolioNavigation() {
   }, []);
   useEffect(() => setOpen(false), [pathname]);
 
+  if (pathname.startsWith("/admin")) return null;
+
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled || open || pathname !== "/" ? "border-b border-border/70 bg-background/90 backdrop-blur-xl" : "bg-transparent"}`}>
       <nav className="shell flex h-[72px] items-center justify-between" aria-label="Primary navigation">
         <Link href="/" className="focus-ring flex items-center gap-3 rounded-lg" aria-label="Asif Hossain, home">
           <span className="grid h-9 w-9 place-items-center rounded-full border border-primary/50 bg-primary/10 font-[var(--font-manrope)] text-sm font-extrabold text-primary">A</span>
-          <span className="hidden text-sm font-semibold tracking-tight sm:block">Asif Hossain</span>
+          <span className="hidden text-sm font-semibold tracking-tight sm:block">{site.name}</span>
         </Link>
 
         <div className="hidden items-center gap-7 md:flex">
