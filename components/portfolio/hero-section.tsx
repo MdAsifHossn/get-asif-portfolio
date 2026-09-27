@@ -1,460 +1,59 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { personalInfo } from "@/lib/portfolio-data";
 import Image from "next/image";
-
-const roles = [
-  "Web Developer",
-  "Frontend Specialist",
-  "React Expert",
-  "Full Stack Developer",
-  "Wix Expert",
-];
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowDownRight, ArrowUpRight, Github, Linkedin, MapPin } from "lucide-react";
+import { useSiteContent } from "@/components/site-content-provider";
 
 export default function HeroSection() {
-  const [currentRole, setCurrentRole] = useState(0);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const interval = setInterval(() => {
-      setCurrentRole((prev) => (prev + 1) % roles.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
-
+  const { home: { hero }, site } = useSiteContent();
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-grid-pattern">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
+    <section className="hero-glow relative min-h-[760px] overflow-hidden border-b border-border/70 pt-[72px]">
+      <div className="noise pointer-events-none absolute inset-0 opacity-[0.035]" />
+      <div className="shell relative grid min-h-[calc(100svh-72px)] items-center gap-12 py-14 lg:grid-cols-[1.12fr_.88fr] lg:py-16">
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7 }} className="relative z-10">
+          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.07] px-3 py-1.5 text-xs font-semibold text-emerald-300">
+            <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" /><span className="relative h-2 w-2 rounded-full bg-emerald-400" /></span>
+            {site.availability}
+          </div>
 
-      {/* Reduced animated dots for better performance */}
-      {mounted && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(10)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 bg-primary/20 rounded-full"
-              initial={{
-                x:
-                  Math.random() *
-                  (typeof window !== "undefined" ? window.innerWidth : 1000),
-                y:
-                  Math.random() *
-                  (typeof window !== "undefined" ? window.innerHeight : 1000),
-              }}
-              animate={{
-                x:
-                  Math.random() *
-                  (typeof window !== "undefined" ? window.innerWidth : 1000),
-                y:
-                  Math.random() *
-                  (typeof window !== "undefined" ? window.innerHeight : 1000),
-              }}
-              transition={{
-                duration: Math.random() * 10 + 20,
-                repeat: Infinity,
-                repeatType: "reverse",
-              }}
-            />
-          ))}
-        </div>
-      )}
+          <p className="mb-5 text-sm font-semibold uppercase tracking-[.22em] text-muted-foreground">{hero.eyebrow}</p>
+          <h1 className="max-w-[760px] font-[var(--font-manrope)] text-[clamp(3.25rem,6vw,5.8rem)] font-semibold leading-[.94] tracking-[-.06em]">
+            {hero.title}<br /> <span className="text-primary">{hero.accent}</span>
+          </h1>
+          <p className="mt-8 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+            {hero.description}
+          </p>
 
-      <div className="relative z-10 container mx-auto px-4 py-20">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="flex-1 text-center lg:text-left"
-          >
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-block mb-4"
-            >
-              <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                Available for opportunities
-              </span>
-            </motion.div>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <Link href="/work" className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition hover:brightness-105">
+              {hero.primaryButton} <ArrowDownRight className="h-4 w-4" />
+            </Link>
+            <a href={hero.resumeUrl} target="_blank" rel="noopener noreferrer" className="focus-ring inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold transition hover:bg-secondary/60">
+              {hero.secondaryButton} <ArrowUpRight className="h-4 w-4" />
+            </a>
+          </div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
-              {`Hi, I'm `}
-              <span className="gradient-text">{personalInfo.name}</span>
-            </h1>
+          <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
+            <span className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" /> {site.location}</span>
+            <a href={site.github} target="_blank" rel="noopener noreferrer" className="focus-ring rounded transition hover:text-foreground"><Github className="h-5 w-5" aria-label="GitHub" /></a>
+            <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="focus-ring rounded transition hover:text-foreground"><Linkedin className="h-5 w-5" aria-label="LinkedIn" /></a>
+          </div>
+        </motion.div>
 
-            <div className="h-16 md:h-20 mb-6">
-              <motion.h2
-                key={currentRole}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-                className="text-3xl md:text-4xl font-semibold text-muted-foreground"
-              >
-                {roles[currentRole]}
-              </motion.h2>
-            </div>
-
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto lg:mx-0">
-              {personalInfo.summary}
-            </p>
-
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-8">
-              <Button
-                size="lg"
-                onClick={() => scrollToSection("projects")}
-                className="btn-hover"
-              >
-                View My Work
-              </Button>
-              <Button asChild size="lg" variant="outline" className="btn-hover">
-                <a
-                  href="https://drive.google.com/uc?export=download&id=1h-lhBfqNtu0CP4HoCe3PTpY1lcIMePGX"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Resume
-                </a>
-              </Button>
-            </div>
-
-            <div className="flex gap-4 justify-center lg:justify-start">
-              <motion.a
-                href={personalInfo.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-3 rounded-full bg-primary/10 hover:bg-primary hover:text-primary-foreground transition-colors"
-                aria-label="GitHub Profile"
-              >
-                <Github className="w-6 h-6" />
-              </motion.a>
-              <motion.a
-                href={personalInfo.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-3 rounded-full bg-primary/10 hover:bg-primary hover:text-primary-foreground transition-colors"
-                aria-label="LinkedIn Profile"
-              >
-                <Linkedin className="w-6 h-6" />
-              </motion.a>
-              <motion.a
-                href={`mailto:${personalInfo.email}`}
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-3 rounded-full bg-primary/10 hover:bg-primary hover:text-primary-foreground transition-colors"
-                aria-label="Email Contact"
-              >
-                <Mail className="w-6 h-6" />
-              </motion.a>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, x: 50 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex-shrink-0"
-          >
-            <div className="relative">
-              {mounted && (
-                <motion.div
-                  animate={{
-                    rotate: [0, 360],
-                  }}
-                  transition={{
-                    duration: 20,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-full blur-3xl opacity-20"
-                />
-              )}
-              <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-primary shadow-2xl">
-                <Image
-                  src={personalInfo.profileImage}
-                  alt={`${personalInfo.name} - Frontend Developer`}
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
-                  quality={85}
-                  className="object-cover"
-                  placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                />
-              </div>
-              {mounted && (
-                <motion.div
-                  animate={{
-                    scale: [1, 1.1, 1],
-                    opacity: [0.5, 0.8, 0.5],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                  }}
-                  className="absolute -inset-4 bg-gradient-to-r from-primary to-accent rounded-full blur-2xl -z-10 opacity-50"
-                />
-              )}
-            </div>
-          </motion.div>
-        </div>
-
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, y: [0, 10, 0] }}
-          transition={{
-            opacity: { delay: 1 },
-            y: { duration: 2, repeat: Infinity },
-          }}
-          onClick={() => scrollToSection("about")}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Scroll down to about section"
-        >
-          <ArrowDown className="w-8 h-8" />
-        </motion.button>
+        <motion.div initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .8, delay: .15 }} className="relative mx-auto w-full max-w-[560px] lg:ml-auto">
+          <div className="absolute -inset-5 rounded-[2.5rem] bg-primary/10 blur-3xl" />
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-border bg-card shadow-2xl shadow-black/20">
+            <Image src={hero.image} alt={`Portrait of ${site.name}`} fill priority sizes="(max-width: 1024px) 90vw, 42vw" className="object-cover object-center" />
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
+          </div>
+          <div className="absolute -left-5 top-8 hidden rounded-2xl border border-border bg-card/90 p-4 shadow-xl backdrop-blur sm:block">
+            <p className="text-2xl font-bold text-primary">4+ yrs</p><p className="mt-1 text-xs text-muted-foreground">shipping products</p>
+          </div>
+          <div className="absolute -bottom-4 right-5 rounded-2xl border border-border bg-card/90 px-4 py-3 shadow-xl backdrop-blur"><p className="text-xs font-semibold">React · Next.js · Vue</p><p className="mt-1 text-[11px] text-muted-foreground">Product-minded engineering</p></div>
+        </motion.div>
       </div>
     </section>
   );
 }
-
-
-
-
-
-// "use client";
-
-// import React, { useState, useEffect } from "react";
-// import { motion } from "framer-motion";
-// import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-// import { personalInfo } from "@/lib/portfolio-data";
-// import Image from "next/image";
-
-// const roles = [
-//   "Web Developer",
-//   "Frontend Specialist",
-//   "React Expert",
-//   "Full Stack Developer",
-//   "Wix Expert",
-// ];
-
-// export default function HeroSection() {
-//   const [currentRole, setCurrentRole] = useState(0);
-
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       setCurrentRole((prev) => (prev + 1) % roles.length);
-//     }, 3000);
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   const scrollToSection = (id: string) => {
-//     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-//   };
-
-//   return (
-//     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-grid-pattern">
-//       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
-
-//       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-//         {[...Array(20)].map((_, i) => (
-//           <motion.div
-//             key={i}
-//             className="absolute w-2 h-2 bg-primary/20 rounded-full"
-//             initial={{
-//               x:
-//                 typeof window !== "undefined"
-//                   ? Math.random() * window.innerWidth
-//                   : Math.random() * 1000,
-//               y:
-//                 typeof window !== "undefined"
-//                   ? Math.random() * window.innerHeight
-//                   : Math.random() * 1000,
-//             }}
-//             animate={{
-//               x:
-//                 typeof window !== "undefined"
-//                   ? Math.random() * window.innerWidth
-//                   : Math.random() * 1000,
-//               y:
-//                 typeof window !== "undefined"
-//                   ? Math.random() * window.innerHeight
-//                   : Math.random() * 1000,
-//             }}
-//             transition={{
-//               duration: Math.random() * 10 + 20,
-//               repeat: Infinity,
-//               repeatType: "reverse",
-//             }}
-//           />
-//         ))}
-//       </div>
-
-//       <div className="relative z-10 container mx-auto px-4 py-20">
-//         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-//           <motion.div
-//             initial={{ opacity: 0, x: -50 }}
-//             animate={{ opacity: 1, x: 0 }}
-//             transition={{ duration: 0.8 }}
-//             className="flex-1 text-center lg:text-left"
-//           >
-//             <motion.div
-//               initial={{ scale: 0.5, opacity: 0 }}
-//               animate={{ scale: 1, opacity: 1 }}
-//               transition={{ duration: 0.5 }}
-//               className="inline-block mb-4"
-//             >
-//               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
-//                 Available for opportunities
-//               </span>
-//             </motion.div>
-
-//             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
-//               {`Hi, I'm `}<span className="gradient-text">{personalInfo?.name}</span>
-//             </h1>
-
-//             <div className="h-16 md:h-20 mb-6">
-//               <motion.h2
-//                 key={currentRole}
-//                 initial={{ opacity: 0, y: 20 }}
-//                 animate={{ opacity: 1, y: 0 }}
-//                 exit={{ opacity: 0, y: -20 }}
-//                 transition={{ duration: 0.5 }}
-//                 className="text-3xl md:text-4xl font-semibold text-muted-foreground"
-//               >
-//                 {roles[currentRole]}
-//               </motion.h2>
-//             </div>
-
-//             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto lg:mx-0">
-//               {personalInfo.summary}
-//             </p>
-
-//             <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-8">
-//               <Button
-//                 size="lg"
-//                 onClick={() => scrollToSection("projects")}
-//                 className="btn-hover"
-//               >
-//                 View My Work
-//               </Button>
-//               <Button asChild size="lg" variant="outline" className="btn-hover">
-//                 <a
-//                   href="https://drive.google.com/uc?export=download&id=1h-lhBfqNtu0CP4HoCe3PTpY1lcIMePGX"
-//                   target="_blank"
-//                   rel="noopener noreferrer"
-//                   download
-//                 >
-//                   <Download className="w-4 h-4 mr-2" />
-//                   Download Resume
-//                 </a>
-//               </Button>
-//             </div>
-
-//             <div className="flex gap-4 justify-center lg:justify-start">
-//               <motion.a
-//                 href={personalInfo.github}
-//                 target="_blank"
-//                 rel="noopener noreferrer"
-//                 whileHover={{ scale: 1.1, rotate: 5 }}
-//                 whileTap={{ scale: 0.9 }}
-//                 className="p-3 rounded-full bg-primary/10 hover:bg-primary hover:text-primary-foreground transition-colors"
-//               >
-//                 <Github className="w-6 h-6" />
-//               </motion.a>
-//               <motion.a
-//                 href={personalInfo.linkedin}
-//                 target="_blank"
-//                 rel="noopener noreferrer"
-//                 whileHover={{ scale: 1.1, rotate: 5 }}
-//                 whileTap={{ scale: 0.9 }}
-//                 className="p-3 rounded-full bg-primary/10 hover:bg-primary hover:text-primary-foreground transition-colors"
-//               >
-//                 <Linkedin className="w-6 h-6" />
-//               </motion.a>
-//               <motion.a
-//                 href={`mailto:${personalInfo.email}`}
-//                 whileHover={{ scale: 1.1, rotate: 5 }}
-//                 whileTap={{ scale: 0.9 }}
-//                 className="p-3 rounded-full bg-primary/10 hover:bg-primary hover:text-primary-foreground transition-colors"
-//               >
-//                 <Mail className="w-6 h-6" />
-//               </motion.a>
-//             </div>
-//           </motion.div>
-
-//           <motion.div
-//             initial={{ opacity: 0, scale: 0.8, x: 50 }}
-//             animate={{ opacity: 1, scale: 1, x: 0 }}
-//             transition={{ duration: 0.8, delay: 0.2 }}
-//             className="flex-shrink-0"
-//           >
-//             <div className="relative">
-//               <motion.div
-//                 animate={{
-//                   rotate: [0, 360],
-//                 }}
-//                 transition={{
-//                   duration: 20,
-//                   repeat: Infinity,
-//                   ease: "linear",
-//                 }}
-//                 className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-full blur-3xl opacity-20"
-//               />
-//               <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-primary shadow-2xl">
-//                 <Image
-//                   src={personalInfo.profileImage}
-//                   alt={personalInfo.name}
-//                   width={96}
-//                   height={96}
-//                   className="w-full h-full object-cover"
-//                 />
-//               </div>
-//               <motion.div
-//                 animate={{
-//                   scale: [1, 1.1, 1],
-//                   opacity: [0.5, 0.8, 0.5],
-//                 }}
-//                 transition={{
-//                   duration: 3,
-//                   repeat: Infinity,
-//                 }}
-//                 className="absolute -inset-4 bg-gradient-to-r from-primary to-accent rounded-full blur-2xl -z-10 opacity-50"
-//               />
-//             </div>
-//           </motion.div>
-//         </div>
-
-//         <motion.button
-//           initial={{ opacity: 0 }}
-//           animate={{ opacity: 1, y: [0, 10, 0] }}
-//           transition={{
-//             opacity: { delay: 1 },
-//             y: { duration: 2, repeat: Infinity },
-//           }}
-//           onClick={() => scrollToSection("about")}
-//           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors"
-//           aria-label="Scroll down"
-//         >
-//           <ArrowDown className="w-8 h-8" />
-//         </motion.button>
-//       </div>
-//     </section>
-//   );
-// }

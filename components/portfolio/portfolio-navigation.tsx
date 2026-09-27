@@ -1,153 +1,69 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { personalInfo } from '@/lib/portfolio-data';
-
-const navLinks = [
-  { href: '#about', label: 'About' },
-  { href: '#experience', label: 'Experience' },
-  { href: '#skills', label: 'Skills' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#education', label: 'Education' },
-  { href: '#contact', label: 'Contact' },
-];
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useSiteContent } from "@/components/site-content-provider";
 
 export default function PortfolioNavigation() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
+  const { navigation: links, site } = useSiteContent();
+  const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
+  useEffect(() => setMounted(true), []);
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-
-      const sections = navLinks.map((link) => link.href.slice(1));
-      const currentSection = sections.find((section) => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
-        }
-        return false;
-      });
-
-      if (currentSection) {
-        setActiveSection(currentSection);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  useEffect(() => setOpen(false), [pathname]);
 
-  const scrollToSection = (href: string) => {
-    const element = document.getElementById(href.slice(1));
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
-    }
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setIsMobileMenuOpen(false);
-  };
+  if (pathname.startsWith("/admin")) return null;
 
   return (
-    <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          isScrolled ? 'bg-background/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
-        }`}
-      >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <button
-              onClick={scrollToTop}
-              className="text-2xl font-bold gradient-text hover:scale-105 transition-transform uppercase"
-            >
-              {personalInfo.name.split(' ')[1]}
-            </button>
+    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled || open || pathname !== "/" ? "border-b border-border/70 bg-background/90 backdrop-blur-xl" : "bg-transparent"}`}>
+      <nav className="shell flex h-[72px] items-center justify-between" aria-label="Primary navigation">
+        <Link href="/" className="focus-ring flex items-center gap-3 rounded-lg" aria-label="Asif Hossain, home">
+          <span className="grid h-9 w-9 place-items-center rounded-full border border-primary/50 bg-primary/10 font-[var(--font-manrope)] text-sm font-extrabold text-primary">A</span>
+          <span className="hidden text-sm font-semibold tracking-tight sm:block">{site.name}</span>
+        </Link>
 
-            <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <button
-                  key={link.href}
-                  onClick={() => scrollToSection(link.href)}
-                  className={`text-sm font-medium transition-colors hover:text-primary relative ${
-                    activeSection === link.href.slice(1)
-                      ? 'text-primary'
-                      : 'text-muted-foreground'
-                  }`}
-                >
-                  {link.label}
-                  {activeSection === link.href.slice(1) && (
-                    <motion.div
-                      layoutId="activeSection"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </Button>
-          </div>
+        <div className="hidden items-center gap-7 md:flex">
+          {links.map((link) => (
+            <Link key={link.href} href={link.href} className={`focus-ring relative rounded py-2 text-sm transition-colors ${pathname === link.href ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+              {link.label}{pathname === link.href && <span className="absolute inset-x-0 -bottom-0.5 mx-auto h-px w-4 bg-primary" />}
+            </Link>
+          ))}
         </div>
-      </motion.nav>
+
+        <div className="flex items-center gap-2">
+          <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} className="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border bg-card/70 transition hover:border-primary/60" aria-label="Toggle color theme">
+            {mounted && (resolvedTheme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />)}
+          </button>
+          <Link href="/contact" className="focus-ring hidden items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold transition hover:border-primary/60 hover:bg-primary/10 lg:flex">Start a project <ArrowUpRight className="h-4 w-4" /></Link>
+          <button onClick={() => setOpen(!open)} className="focus-ring grid h-10 w-10 place-items-center rounded-full border border-border md:hidden" aria-expanded={open} aria-label="Toggle menu">
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </nav>
 
       <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
-            />
-
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-16 bottom-0 w-64 bg-background border-l z-30 md:hidden"
-            >
-              <div className="p-6 space-y-4">
-                {navLinks.map((link, index) => (
-                  <motion.button
-                    key={link.href}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    onClick={() => scrollToSection(link.href)}
-                    className={`block w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      activeSection === link.href.slice(1)
-                        ? 'bg-primary text-primary-foreground'
-                        : 'hover:bg-muted'
-                    }`}
-                  >
-                    {link.label}
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-          </>
+        {open && (
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="border-t border-border bg-background px-5 py-6 md:hidden">
+            <div className="flex flex-col gap-1">
+              {links.map((link) => <Link key={link.href} href={link.href} className={`rounded-xl px-4 py-3 text-left text-lg font-medium ${pathname === link.href ? "bg-secondary text-foreground" : "hover:bg-secondary/60"}`}>{link.label}</Link>)}
+              <Link href="/contact" className="mt-3 flex items-center justify-between rounded-xl bg-primary px-4 py-3 font-bold text-primary-foreground">Start a project <ArrowUpRight className="h-5 w-5" /></Link>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </header>
   );
 }
